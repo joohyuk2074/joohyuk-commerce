@@ -1,5 +1,6 @@
 package me.joohyuk.article.application.port.`in`
 
+import me.joohyuk.article.adapter.`in`.web.dto.ArticleListResponse
 import me.joohyuk.article.domain.Article
 import me.joohyuk.article.domain.ArticleId
 
@@ -15,7 +16,7 @@ interface ArticleUseCase {
     /**
      * 게시글 목록 조회
      */
-    fun getArticles(boardId: Long, page: Int, size: Int): List<Article>
+    fun getArticles(boardId: Long, page: Int, size: Int): ArticleListResponse
 
     /**
      * 게시글 수정

@@ -32,17 +32,13 @@ class ArticleController(
         return ArticleResponse.from(article)
     }
 
-    /**
-     * 게시글 목록 조회 (Board 별)
-     */
     @GetMapping
     fun getArticles(
         @RequestParam boardId: Long,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int
     ): ArticleListResponse {
-        val articles = articleUseCase.getArticles(boardId, page, size)
-        return ArticleListResponse.from(articles, page, size)
+        return articleUseCase.getArticles(boardId, page, size)
     }
 
     /**

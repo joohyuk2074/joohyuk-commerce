@@ -1,5 +1,6 @@
 package me.joohyuk.article.application.service
 
+import me.joohyuk.article.adapter.`in`.web.dto.ArticleListResponse
 import me.joohyuk.article.application.port.`in`.ArticleUseCase
 import me.joohyuk.article.application.port.`in`.CreateArticleCommand
 import me.joohyuk.article.application.port.`in`.UpdateArticleCommand
@@ -37,8 +38,11 @@ class ArticleService(
     }
 
     @Transactional(readOnly = true)
-    override fun getArticles(boardId: Long, page: Int, size: Int): List<Article> {
-        return articlePort.findByBoardId(boardId, page, size)
+    override fun getArticles(boardId: Long, page: Int, size: Int): ArticleListResponse {    // TODO: 계층 침범
+        val articles = articlePort.findByBoardId(boardId, page, size)
+        val totalCount = articlePort.countByBoardId(boardId, page, size)
+
+        return ArticleListResponse.from(articles, page, size, totalCount)
     }
 
     override fun updateArticle(command: UpdateArticleCommand): Article {

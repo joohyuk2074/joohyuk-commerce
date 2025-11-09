@@ -5,12 +5,8 @@ import me.joohyuk.article.domain.Article
 import me.joohyuk.article.domain.ArticleId
 import java.time.LocalDateTime
 
-/**
- * Article JPA 엔티티 (영속성 모델)
- * 데이터베이스 테이블과 매핑되는 엔티티
- */
 @Entity
-@Table(name = "articles")
+@Table(name = "article")
 class ArticleJpaEntity(
     @Id
     @Column(name = "article_id")

@@ -1,7 +1,8 @@
 package me.joohyuk.article.adapter.out.persistence
 
-import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 /**
@@ -10,8 +11,32 @@ import org.springframework.stereotype.Repository
  */
 @Repository
 interface ArticleJpaRepository : JpaRepository<ArticleJpaEntity, Long> {
-    /**
-     * Board ID로 게시글 목록 조회
-     */
-    fun findByBoardId(boardId: Long, pageable: Pageable): List<ArticleJpaEntity>
+
+    @Query(
+        value = "SELECT article.article_id, article.title, article.content, article.board_id, " +
+                "article.writer_id, article.created_at, article.modified_at " +
+                "FROM (" +
+                "   SELECT article_id FROM article " +
+                "   WHERE board_id = :boardId " +
+                "   ORDER BY article_id DESC LIMIT :limit OFFSET :offset " +
+                ") t LEFT JOIN article on t.article_id = article.article_id",
+        nativeQuery = true
+    )
+    fun findAll(
+        @Param("boardId") boardId: Long,
+        @Param("offset") offset: Int,
+        @Param("limit") limit: Int
+    ): List<ArticleJpaEntity>
+
+    @Query(
+        value = "SELECT count(*) FROM (" +
+                "   SELECT article.article_id FROM article " +
+                "   WHERE article.board_id = :boardId LIMIT :limit" +
+                ") t",
+        nativeQuery = true
+    )
+    fun count(
+        @Param("boardId") boardId: Long,
+        @Param("limit") limit: Long
+    ): Long
 }

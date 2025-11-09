@@ -7,6 +7,7 @@ dependencies {
     implementation("com.mysql:mysql-connector-j")
 
     implementation(project(":common:snowflake"))
+    implementation(project(":common:pagination"))
 }
 
 tasks.named<BootJar>("bootJar") {

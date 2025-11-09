@@ -3,8 +3,7 @@ package me.joohyuk.article.adapter.out.persistence
 import me.joohyuk.article.application.port.out.ArticlePort
 import me.joohyuk.article.domain.Article
 import me.joohyuk.article.domain.ArticleId
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
+import me.joohyuk.pagination.PageLimitCalculator
 import org.springframework.stereotype.Component
 
 /**
@@ -29,14 +28,15 @@ class ArticlePersistenceAdapter(
     }
 
     override fun findByBoardId(boardId: Long, page: Int, size: Int): List<Article> {
-        val pageable = PageRequest.of(
-            page,
-            size,
-            Sort.by(Sort.Direction.DESC, "createdAt")
-        )
-
-        return articleJpaRepository.findByBoardId(boardId, pageable)
+        return articleJpaRepository.findAll(boardId, (page - 1) * size, size)
             .map { it.toDomain() }
+    }
+
+    override fun countByBoardId(boardId: Long, page: Int, size: Int): Long {
+        return articleJpaRepository.count(
+            boardId,
+            PageLimitCalculator.calculatePageLimit(page, size, 10L)
+        )
     }
 
     override fun deleteById(id: ArticleId) {

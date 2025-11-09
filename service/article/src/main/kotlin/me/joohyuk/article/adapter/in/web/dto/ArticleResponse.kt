@@ -37,15 +37,20 @@ data class ArticleListResponse(
     val articles: List<ArticleResponse>,
     val page: Int,
     val size: Int,
-    val totalCount: Int
+    val totalCount: Long
 ) {
     companion object {
-        fun from(articles: List<Article>, page: Int, size: Int): ArticleListResponse {
+        fun from(
+            articles: List<Article>,
+            page: Int,
+            size: Int,
+            totalCount: Long
+        ): ArticleListResponse {
             return ArticleListResponse(
                 articles = articles.map { ArticleResponse.from(it) },
                 page = page,
                 size = size,
-                totalCount = articles.size
+                totalCount = totalCount
             )
         }
     }
