@@ -22,9 +22,6 @@ class ArticleController(
         return ArticleResponse.from(article)
     }
 
-    /**
-     * 게시글 단건 조회
-     */
     @GetMapping("/{id}")
     fun getArticle(@PathVariable id: Long): ArticleResponse {
         val article = articleUseCase.getArticle(ArticleId(id))
@@ -33,17 +30,23 @@ class ArticleController(
     }
 
     @GetMapping
-    fun getArticles(
+    fun readAll(
         @RequestParam boardId: Long,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int
     ): ArticleListResponse {
-        return articleUseCase.getArticles(boardId, page, size)
+        return articleUseCase.readAll(boardId, page, size)
     }
 
-    /**
-     * 게시글 수정
-     */
+    @GetMapping("/infinite-scroll")
+    fun readAllInfiniteScroll(
+        @RequestParam boardId: Long,
+        @RequestParam(defaultValue = "20") size: Int,
+        @RequestParam(required = false) lastArticleId: Long?,
+    ): List<ArticleResponse> {
+        return articleUseCase.readInfiniteScroll(boardId, size, lastArticleId)
+    }
+
     @PutMapping("/{id}")
     fun updateArticle(
         @PathVariable id: Long,
@@ -53,9 +56,6 @@ class ArticleController(
         return ArticleResponse.from(article)
     }
 
-    /**
-     * 게시글 삭제
-     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteArticle(
@@ -66,8 +66,5 @@ class ArticleController(
     }
 }
 
-/**
- * 게시글을 찾을 수 없을 때 발생하는 예외
- */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 class ArticleNotFoundException(message: String) : RuntimeException(message)

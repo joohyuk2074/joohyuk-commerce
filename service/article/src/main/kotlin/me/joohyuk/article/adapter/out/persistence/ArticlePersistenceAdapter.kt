@@ -27,8 +27,25 @@ class ArticlePersistenceAdapter(
             .orElse(null)
     }
 
-    override fun findByBoardId(boardId: Long, page: Int, size: Int): List<Article> {
+    override fun findAll(boardId: Long, page: Int, size: Int): List<Article> {
         return articleJpaRepository.findAll(boardId, (page - 1) * size, size)
+            .map { it.toDomain() }
+    }
+
+    override fun findAllInfiniteScroll(
+        boardId: Long,
+        size: Int
+    ): List<Article> {
+        return articleJpaRepository.findAllInfiniteScroll(boardId, size)
+            .map { it.toDomain() }
+    }
+
+    override fun findAllInfiniteScroll(
+        boardId: Long,
+        size: Int,
+        lastArticleId: Long
+    ): List<Article> {
+        return articleJpaRepository.findAllInfiniteScroll(boardId, size, lastArticleId)
             .map { it.toDomain() }
     }
 

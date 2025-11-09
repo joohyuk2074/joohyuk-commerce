@@ -1,6 +1,7 @@
 package me.joohyuk.article.application.service
 
 import me.joohyuk.article.adapter.`in`.web.dto.ArticleListResponse
+import me.joohyuk.article.adapter.`in`.web.dto.ArticleResponse
 import me.joohyuk.article.application.port.`in`.ArticleUseCase
 import me.joohyuk.article.application.port.`in`.CreateArticleCommand
 import me.joohyuk.article.application.port.`in`.UpdateArticleCommand
@@ -38,11 +39,27 @@ class ArticleService(
     }
 
     @Transactional(readOnly = true)
-    override fun getArticles(boardId: Long, page: Int, size: Int): ArticleListResponse {    // TODO: 계층 침범
-        val articles = articlePort.findByBoardId(boardId, page, size)
+    override fun readAll(boardId: Long, page: Int, size: Int): ArticleListResponse {    // TODO: 계층 침범
+        val articles = articlePort.findAll(boardId, page, size)
         val totalCount = articlePort.countByBoardId(boardId, page, size)
 
         return ArticleListResponse.from(articles, page, size, totalCount)
+    }
+
+    @Transactional(readOnly = true)
+    override fun readInfiniteScroll(
+        boardId: Long,
+        size: Int,
+        lastArticleId: Long?
+    ): List<ArticleResponse> {
+
+        val articles = if (lastArticleId == null) {
+            articlePort.findAllInfiniteScroll(boardId, size)
+        } else {
+            articlePort.findAllInfiniteScroll(boardId, size, lastArticleId)
+        }
+
+        return articles.map { article -> ArticleResponse.from(article) }
     }
 
     override fun updateArticle(command: UpdateArticleCommand): Article {

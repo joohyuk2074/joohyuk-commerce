@@ -13,7 +13,11 @@ interface ArticlePort {
 
     fun findById(id: ArticleId): Article?
 
-    fun findByBoardId(boardId: Long, page: Int, size: Int): List<Article>
+    fun findAll(boardId: Long, page: Int, size: Int): List<Article>
+
+    fun findAllInfiniteScroll(boardId: Long, size: Int): List<Article>
+
+    fun findAllInfiniteScroll(boardId: Long, size: Int, lastArticleId: Long): List<Article>
 
     fun countByBoardId(boardId: Long, page: Int, size: Int): Long
 
