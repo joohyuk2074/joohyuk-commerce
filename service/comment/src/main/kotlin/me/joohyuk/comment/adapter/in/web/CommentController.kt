@@ -8,18 +8,12 @@ import me.joohyuk.comment.domain.CommentId
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
-/**
- * Comment REST Controller
- */
 @RestController
 @RequestMapping("/api/v1/comments")
 class CommentController(
     private val commentUseCase: CommentUseCase
 ) {
 
-    /**
-     * 댓글 생성
-     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createComment(@RequestBody request: CreateCommentRequest): CommentResponse {
@@ -27,9 +21,6 @@ class CommentController(
         return CommentResponse.from(comment)
     }
 
-    /**
-     * 댓글 단건 조회
-     */
     @GetMapping("/{id}")
     fun getComment(@PathVariable id: Long): CommentResponse {
         val comment = commentUseCase.getComment(CommentId(id))
@@ -37,9 +28,6 @@ class CommentController(
         return CommentResponse.from(comment)
     }
 
-    /**
-     * 게시글의 댓글 목록 조회
-     */
     @GetMapping
     fun getCommentsByArticleId(@RequestParam articleId: Long): CommentListResponse {
         val comments = commentUseCase.getCommentsByArticleId(articleId)
